@@ -3,7 +3,7 @@
 ### [Coisas A fazer!!]
 
 - `Codigo` (str): NIST Chemistry WebBook Compound ID;
-    - Implementar o Algoritimo Simplex
+    - Fazer o codigo ficar mais entendivel
     - Demostrar em um exemplo teste
     - Sedimentar o codigo e limpar!!
 
