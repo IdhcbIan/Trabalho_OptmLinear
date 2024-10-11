@@ -1,0 +1,152 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{enumitem}
+
+\title{SME0211 - Otimização Linear\\
+Segundo semestre de 2024\\ 
+Lista de exercícios 9}
+\author{Ian Bezerra - 13835412}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problema 1}
+
+\
+
+Considere o poliedro $P = \{x \mid Ax \geq b\}$, com
+
+$$
+A = \begin{pmatrix}
+1 & 0 & 2 \\
+5 & -2 & 6 \\
+-1 & 2 & 0 \\
+2 & -1 & 1 \\
+0 & 1 & 1
+\end{pmatrix}
+\quad \text{e} \quad
+b = \begin{pmatrix}
+0 \\
+5 \\
+1 \\
+2 \\
+1
+\end{pmatrix}
+$$
+
+\begin{enumerate}
+\item Dado o ponto $x = (1,1,1)$ e o vetor direção $d = (3,2,1)$, a reta $y = x + \lambda d$, com $\lambda \in \mathbb{R}$, está inteiramente dentro do poliedro $P$? Justifique.
+
+\item O poliedro $P$ tem algum ponto extremo? Justifique.
+\end{enumerate}
+
+\section*{Solução do item 1}
+
+Para determinar se a reta $y = x + \lambda d$ está inteiramente dentro do poliedro $P$, precisamos verificar se todos os pontos nesta reta satisfazem as desigualdades que definem $P$ para todos os valores de $\lambda$.
+
+\textbf{Substituindo a equação da reta nas desigualdades do poliedro}
+
+Precisamos verificar se $A(x + \lambda d) \geq b$ para todo $\lambda \in \mathbb{R}$.
+
+Calculemos $A(x + \lambda d)$:
+
+$$
+A(x + \lambda d) = A \begin{pmatrix}
+1 + 3\lambda \\
+1 + 2\lambda \\
+1 + \lambda
+\end{pmatrix}
+$$
+
+\textbf{Avaliando as desigualdades}
+
+\begin{enumerate}
+\item $1(1 + 3\lambda) + 0(1 + 2\lambda) + 2(1 + \lambda) \geq 0$
+   $1 + 3\lambda + 2 + 2\lambda \geq 0$
+   $3 + 5\lambda \geq 0$
+
+\item $5(1 + 3\lambda) - 2(1 + 2\lambda) + 6(1 + \lambda) \geq 5$
+   $5 + 15\lambda - 2 - 4\lambda + 6 + 6\lambda \geq 5$
+   $9 + 17\lambda \geq 5$
+
+\item $-1(1 + 3\lambda) + 2(1 + 2\lambda) + 0(1 + \lambda) \geq 1$
+   $-1 - 3\lambda + 2 + 4\lambda \geq 1$
+   $1 + \lambda \geq 1$
+
+\item $2(1 + 3\lambda) - 1(1 + 2\lambda) + 1(1 + \lambda) \geq 2$
+   $2 + 6\lambda - 1 - 2\lambda + 1 + \lambda \geq 2$
+   $2 + 5\lambda \geq 2$
+
+\item $0(1 + 3\lambda) + 1(1 + 2\lambda) + 1(1 + \lambda) \geq 1$
+   $1 + 2\lambda + 1 + \lambda \geq 1$
+   $2 + 3\lambda \geq 1$
+\end{enumerate}
+
+\textbf{Com isso temos que.}
+
+Para que a reta esteja inteiramente dentro do poliedro, todas essas desigualdades devem ser satisfeitas para todo $\lambda \in \mathbb{R}$. Simplificando:
+
+\begin{enumerate}
+\item $\lambda \geq -\frac{3}{5}$
+\item $\lambda \geq -\frac{4}{17}$
+\item $\lambda \geq 0$
+\item $\lambda \geq 0$
+\item $\lambda \geq -\frac{1}{3}$
+\end{enumerate}
+
+\textbf{Portanto.}
+
+Para que a reta esteja inteiramente dentro do poliedro, todas essas desigualdades devem ser satisfeitas simultaneamente para todo $\lambda \in \mathbb{R}$. No entanto, podemos ver que isso não é possível devido à terceira e quarta desigualdades, que exigem $\lambda \geq 0$.
+
+Portanto, a reta $y = x + \lambda d$ não está inteiramente dentro do poliedro $P$. Apenas a parte da reta onde $\lambda \geq 0$ está dentro do poliedro.
+
+\textbf{Expandindo.}
+
+A reta intersecta a fronteira do poliedro em $\lambda = 0$, que corresponde ao ponto $x = (1,1,1)$. Para $\lambda < 0$, a reta está fora do poliedro, enquanto para $\lambda \geq 0$, ela permanece dentro. Isso significa que apenas um raio (semi-reta) partindo de $(1,1,1)$ na direção de $d = (3,2,1)$ está contido dentro do poliedro, não a reta inteira.
+
+\section*{Solução do item 2}
+
+Para determinar se o poliedro $P$ tem algum ponto extremo, vamos analisar a estrutura do sistema $Ax \geq b$.
+
+\textbf{Análisando a da matriz $A$}
+
+A matriz $A$ é:
+
+$$
+A = \begin{pmatrix}
+1 & 0 & 2 \\
+5 & -2 & 6 \\
+-1 & 2 & 0 \\
+2 & -1 & 1 \\
+0 & 1 & 1
+\end{pmatrix}
+$$
+
+\textbf{Verificar a direção de recessão}
+
+Uma direção de recessão $d$ satisfaz $Ad \geq 0$. Se existir uma direção de recessão não-nula, o poliedro não terá pontos extremos.
+
+Resolvendo $Ad \geq 0$:
+
+\begin{align*}
+d_1 + 2d_3 &\geq 0 \\
+5d_1 - 2d_2 + 6d_3 &\geq 0 \\
+-d_1 + 2d_2 &\geq 0 \\
+2d_1 - d_2 + d_3 &\geq 0 \\
+d_2 + d_3 &\geq 0
+\end{align*}
+
+\textbf{Análise as direções de recessão}
+
+Observamos que $d = (0, 0, 1)$ satisfaz todas as desigualdades acima. Esta é uma direção de recessão não-nula.
+
+\textbf{Conclusão.}
+
+A existência de uma direção de recessão não-nula implica que o poliedro $P$ se estende infinitamente e não possui pontos extremos.
+
+\end{document}
