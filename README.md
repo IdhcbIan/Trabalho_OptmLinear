@@ -1,6 +1,4 @@
-# NistChemData: Extracted Physico-Chemical Data from NIST Chemistry WebBook
-
-## Data Cookbook
+# Trabalho Final - Optim Linear
 
 ### [Coisas A fazer!!]
 
