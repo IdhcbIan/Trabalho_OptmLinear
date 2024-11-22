@@ -5,6 +5,23 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{enumitem}
+\usepackage{listings}  % Add this line
+\usepackage{xcolor}  % Optional: for colored syntax
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=5pt,
+    showstringspaces=false,
+    frame=single,
+    language=Python,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{purple},
+    numberstyle=\tiny\color{gray}
+}
+
 
 \title{SME0211 - Otimização Linear\\
 Segundo semestre de 2024\\ 
@@ -68,10 +85,145 @@ Esta representação padronizada permite unificar as aplicaçoes de métodos de 
 
 \section{O Algoritmo Simplex}
 
+O algoritmo Simplex é um método iterativo para resolver problemas de programação linear. Desenvolvido por George Dantzig em 1947, ele se tornou um dos algoritmos mais importantes e amplamente utilizados na otimização linear.
+
+O método funciona percorrendo os vértices do poliedro formado pelas restrições do problema, movendo-se de um vértice a outro de forma a melhorar progressivamente o valor da função objetivo até encontrar a solução ótima. O algoritmo é dividido em duas fases principais:
+
+\subsection{Fase I - Encontrando uma Solução Básica Viável}
+
+A primeira fase do Simplex tem como objetivo encontrar um ponto inicial viável para começar a otimização. Isso é necessário porque nem sempre é trivial encontrar uma solução que satisfaça todas as restrições do problema. Nesta fase:
+
+\begin{enumerate}
+    \item Cria-se um problema auxiliar introduzindo variáveis artificiais
+    \item Minimiza-se a soma das variáveis artificiais
+    \item Se o valor mínimo for zero, uma solução básica viável foi encontrada
+    \item Se o valor mínimo for positivo, o problema original não tem solução viável
+\end{enumerate}
+
+\subsection{Fase II - Otimização}
+
+Uma vez encontrada uma solução básica viável, a Fase II busca a solução ótima do problema original. Em cada iteração desta fase, o algoritmo:
+
+\begin{enumerate}
+    \item Verifica se a solução atual é ótima através do critério de otimalidade
+    \item Se não for ótima, identifica uma variável para entrar na base (critério de entrada)
+    \item Determina qual variável deve sair da base (critério de saída)
+    \item Atualiza a solução movendo-se para um novo vértice através de operações de pivoteamento
+\end{enumerate}
+
+O processo continua até que uma das seguintes condições seja alcançada:
+\begin{itemize}
+    \item Uma solução ótima é encontrada
+    \item Detecta-se que o problema é ilimitado
+\end{itemize}
+
+Uma característica fundamental do Simplex é que ele garante encontrar a solução ótima em um número finito de passos, desde que ela exista, embora no pior caso o número de iterações possa crescer exponencialmente com o tamanho do problema.
 
 
+\subsection{O Tableau do Simplex}
+
+O Tableau do Simplex é uma representação matricial que organiza todas as informações necessárias para executar o algoritmo de forma sistemática. Esta estrutura tabular inclui:
+
+\begin{itemize}
+    \item Os coeficientes das restrições
+    \item Os coeficientes da função objetivo
+    \item As variáveis básicas e não-básicas
+    \item Os valores das variáveis na solução atual
+    \item Os termos independentes
+\end{itemize}
+
+A forma geral do Tableau é:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c|cccc|c}
+Base & $x_1$ & $x_2$ & $\cdots$ & $x_n$ & RHS \\
+\hline
+$z$ & $c_1$ & $c_2$ & $\cdots$ & $c_n$ & $z_0$ \\
+\hline
+$x_{B1}$ & $a_{11}$ & $a_{12}$ & $\cdots$ & $a_{1n}$ & $b_1$ \\
+$x_{B2}$ & $a_{21}$ & $a_{22}$ & $\cdots$ & $a_{2n}$ & $b_2$ \\
+$\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ & $\vdots$ \\
+$x_{Bm}$ & $a_{m1}$ & $a_{m2}$ & $\cdots$ & $a_{mn}$ & $b_m$ \\
+\end{tabular}
+\end{table}
+
+Onde RHS (Right Hand Side) representa os termos independentes, e a última linha contém os coeficientes da função objetivo e o valor atual da função objetivo ($z_0$). O Tableau é atualizado a cada iteração do algoritmo através de operações de pivoteamento, facilitando o acompanhamento do progresso da otimização e a identificação da solução ótima.
 
 
+\subsection{Implementação do Algoritmo}
+
+Para implementar o algoritmo Simplex, desenvolvemos um código em Python que segue a estrutura descrita anteriormente. A implementação foi organizada em funções modulares para facilitar a manutenção e compreensão do código:
+
+\begin{itemize}
+    \item \textbf{Inicialização:} O código começa configurando o problema na forma padrão, construindo o Tableau inicial com as variáveis de folga necessárias.
+    
+    \item \textbf{Fase I:} Implementamos o método das duas fases, onde primeiro buscamos uma solução básica viável inicial através da adição de variáveis artificiais.
+    
+    \item \textbf{Fase II:} Uma vez encontrada uma solução viável, o algoritmo procede com a otimização, realizando iterações até encontrar a solução ótima ou detectar ilimitabilidade.
+    
+    \item \textbf{Funções auxiliares:} Desenvolvemos funções para:
+    \begin{itemize}
+        \item Identificar a variável de entrada (maior coeficiente negativo)
+        \item Determinar a variável de saída (razão mínima)
+        \item Realizar operações de pivoteamento
+        \item Verificar critérios de parada
+    \end{itemize}
+\end{itemize}
+
+A implementação faz uso extensivo das bibliotecas NumPy para operações matriciais eficientes e Pandas para manipulação e visualização do Tableau, permitindo uma execução rápida mesmo para problemas de dimensões consideráveis.
+
+\subsection{Código}
+
+\begin{lstlisting}[language=Python]
+def get_solution_simplex(c, A, b):
+    nvar = len(A[0])
+    d = (False, nvar)
+    c1, A1, b1, d = fase1(c, A, b)
+
+    # Caso seja necessario usar variaveis artificiais(Faze 1)
+    if d[0]:
+        print("Simplex FASE 1: ")
+        A2, b2 = simplex(c1,A1,b1,d)
+        if A2 is None:
+            print("Problema infactivel")
+            return None
+        else:
+            print("Resultado da fase 1: ",b2)
+
+
+        # Convertendo tudo para mesmo formato que o simplex(Faze 2)
+        A2 = [[float(x) for x in row] for row in A2]
+        b2 = [float(x) for x in b2] 
+        
+        fA, fb = simplex(c, A2, b2,(False, nvar), True)
+        print("Resultado da fase 2: ",fb)
+    else:  # Não foi necessario usar a fase 1(Resolve direto Faze 2)
+        print("Nao Foi nessesario usar a fase 1!!")
+        fA, fb = simplex(c, A1, b1, d)
+        print("Resultado da fase 2: ", fb)
+\end{lstlisting}
+
+
+A função \texttt{get\_solution\_simplex} é responsável por coordenar a execução do método Simplex de duas fases. Ela recebe como parâmetros:
+
+\begin{itemize}
+    \item \texttt{c}: vetor de coeficientes da função objetivo
+    \item \texttt{A}: matriz de coeficientes das restrições 
+    \item \texttt{b}: vetor de termos independentes
+\end{itemize}
+
+A função primeiro verifica se é necessário executar a Fase I do Simplex (quando não temos uma solução básica viável inicial). Se for necessário:
+
+\begin{enumerate}
+    \item Executa a Fase I para encontrar uma solução básica viável inicial
+    \item Verifica se o problema é factível
+    \item Se factível, usa a solução da Fase I como ponto de partida para a Fase II
+\end{enumerate}
+
+Caso não seja necessária a Fase I, a função executa diretamente a Fase II do Simplex para encontrar a solução ótima.
+
+A função retorna \texttt{None} se o problema for infactível, ou a solução ótima caso contrário.
 
 
 \end{document}
