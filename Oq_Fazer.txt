@@ -1,0 +1,26 @@
+-> Coisas para fazer
+
+
+
+
+
+
+- Implementar o criador de problemas factiveis
+
+- Criar_Problema(n_var, n_restricoes)
+
+- testar para 0,2 ; 0,5 ; 0,8 -> N_restricoes
+
+- usar linprog e comparar para resolver solucao
+
+- rodar para range(1,nmax) cada parametro e criar grafico de parametro, (casos_true)
+
+
+
+
+
+
+
+
+
+
